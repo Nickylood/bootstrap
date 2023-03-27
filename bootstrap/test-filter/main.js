@@ -2,7 +2,7 @@ fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
       .then(json => data(json));
 
-const data = (json) => {
+function data(json) {
     json = json.map(x => {
         delete x["address"];
         delete x["company"];
@@ -12,7 +12,7 @@ const data = (json) => {
     getTableData(json);
 };
 
-const getTableHeader = (fields) => {
+function getTableHeader(fields) {
     
     const table = document.querySelector('.table');
     const thead = document.createElement('thead');
@@ -30,7 +30,7 @@ const getTableHeader = (fields) => {
     table.appendChild(thead);
 };
 
-const getTableData = data => {
+function getTableData(data) {
     console.log(data)
     const table = document.querySelector('.table');
     const tbody = document.createElement('tbody');
