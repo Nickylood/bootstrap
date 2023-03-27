@@ -10,6 +10,7 @@ function data(json) {
     });
     getTableHeader(Object.keys(json[0]));
     getTableData(json);
+    console.log(json)
 };
 
 function getTableHeader(fields) {
@@ -25,13 +26,13 @@ function getTableHeader(fields) {
         th.id = x;
         fragment.appendChild(th);
     });
+    console.log(fragment)
     tr.appendChild(fragment);
     thead.appendChild(tr);
     table.appendChild(thead);
 };
 
 function getTableData(data) {
-    console.log(data)
     const table = document.querySelector('.table');
     const tbody = document.createElement('tbody');
 data.forEach(x => {
