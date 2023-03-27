@@ -12,7 +12,6 @@ function data(json) {
     });
     getTableHeader(Object.keys(json[0]));
     getTableData(json);
-    console.log(json)
 };
 
 function getTableHeader(fields) {
@@ -57,5 +56,32 @@ function getTableData(data) {
 };
 
 const deleteTableData = () => {
-    
-}
+    const tbody = document.querySelector('.table tbody');
+    tbody.remove();
+};
+
+const clickFilterEvents = fields => {
+    fields.forEach(x => {
+        const thisTh = document.querySelector(`#${x}`);
+        const trigsort = sort();
+        thisTh.addEventListener('click', e => {
+            deleteTableData();
+            trigsort(e);
+        });
+    });
+};
+
+const sort = () => {
+    let trigger = 1;
+    return e => {
+        trigger = -trigger;
+        gData.sort((a, b) => {
+            if(a[e.target.id] > b[e.target.id]) {
+                return trigger;
+            } else {
+                return -trigger;
+            }
+        });
+        getTableData(gData);
+    };
+};
