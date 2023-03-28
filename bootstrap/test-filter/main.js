@@ -5,7 +5,7 @@ fetch('https://jsonplaceholder.typicode.com/users')
       let gData = undefined;
 
 function data(json) {
-    json = json.map(x => {
+    gData = json = json.map(x => {
         delete x["address"];
         delete x["company"];
         return x;
@@ -29,6 +29,7 @@ function getTableHeader(fields) {
     tr.appendChild(fragment);
     thead.appendChild(tr);
     table.appendChild(thead);
+    clickFilterEvents(fields);
 };
 
 function getTableData(data) {
