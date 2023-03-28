@@ -56,12 +56,12 @@ function getTableData(data) {
     });
 };
 
-const deleteTableData = () => {
+function deleteTableData() {
     const tbody = document.querySelector('.table tbody');
     tbody.remove();
 };
 
-const clickFilterEvents = fields => {
+function clickFilterEvents (fields) {
     fields.forEach(x => {
         const thisTh = document.querySelector(`#${x}`);
         const trigsort = sort();
@@ -72,7 +72,7 @@ const clickFilterEvents = fields => {
     });
 };
 
-const sort = () => {
+function sort () {
     let trigger = 1;
     return e => {
         trigger = -trigger;
