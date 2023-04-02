@@ -86,3 +86,12 @@ function sort () {
         getTableData(gData);
     };
 };
+
+for (let i = 0; i < td.length; i++) {
+    td[i].addEventListener('click', function() {
+        let input = document.createElement('input');
+        input.value = td[i].innerHTML;
+        this.appendChild(input);
+    });
+}
+
