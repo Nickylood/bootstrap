@@ -88,10 +88,19 @@ function sort () {
 };
 
 for (let i = 0; i < td.length; i++) {
-    td[i].addEventListener('click', function() {
+    td[i].addEventListener('click', function func() {
         let input = document.createElement('input');
         input.value = td[i].innerHTML;
+        this.innerHTML = '';
         this.appendChild(input);
+
+        let td = this;
+        input.addEventListener('blur', function() {
+            td.innerHTML = this.value;
+            td.addEventListener('click', func);
+        });
+
+        this.removeEventListener('click', func);
     });
 }
 
