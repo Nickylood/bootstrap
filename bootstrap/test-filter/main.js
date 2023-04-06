@@ -4,6 +4,7 @@ fetch('https://jsonplaceholder.typicode.com/users')
 
 let gData = undefined;
 
+
 function data(json) {
   gData = json = json.map(x => {
     delete x["address"];
@@ -100,7 +101,19 @@ function replacement() {
         const rowIndex = td.parentNode.rowIndex;
         const cellIndex = td.cellIndex;
         gData[rowIndex - 1][td.parentNode.parentNode.querySelector('thead th:nth-child(' + (cellIndex + 1) + ')').id] = td.innerHTML;
-      }
+      } 
+      td.removeAttribute('contenteditable');
     });
   });
+}
+
+const saveBtn = document.getElementById('saveBtn');
+
+function saveData() {
+  saveBtn.addEventListener('click', saveData);
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://jsonplaceholder.typicode.com/users');
+  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+  const jsonData = JSON.stringify(gData);
+  xhr.send(jsonData);
 }
