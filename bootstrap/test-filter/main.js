@@ -1,18 +1,8 @@
-fetch('https://jsonplaceholder.typicode.com/users')
-  .then(response => response.json())
-  .then(json => data(json));
+
 
 let gData = undefined;
 
-function data(json) {
-  gData = json = json.map(x => {
-    delete x["address"];
-    delete x["company"];
-    return x;
-  });
-  getTableHeader(Object.keys(json[0]));
-  getTableData(json);
-};
+
 
 function getTableHeader(fields) {
   const table = document.querySelector('.table');
@@ -21,7 +11,7 @@ function getTableHeader(fields) {
   const fragment = document.createDocumentFragment();
   fields.forEach(x => {
     const th = document.createElement('th');
-    th.innerText = x;
+    th.innerText = x; 
     th.scope = "col";
     th.id = x;
     fragment.appendChild(th);
@@ -100,7 +90,7 @@ function replacement() {
         const rowIndex = td.parentNode.rowIndex;
         const cellIndex = td.cellIndex;
         const th = td.parentNode.parentNode.querySelector('thead th:nth-child(' + (cellIndex + 1) + ')');
-        if (th) { // Add null check
+        if (th) {
           gData[rowIndex - 1][th.id] = td.innerHTML;
         }
       } 
@@ -112,14 +102,60 @@ function replacement() {
 const saveBtn = document.getElementById('saveBtn');
 
 function saveData() {
-  saveBtn.addEventListener('click', () => {
+  console.log(saveBtn);
+  
     const xhr = new XMLHttpRequest();
     xhr.open('POST', 'https://jsonplaceholder.typicode.com/users');
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     const jsonData = JSON.stringify(gData);
     xhr.send(jsonData);
-  });
 };
 
 
 
+const TestProject = {
+  init: function() {
+    console.log('start init');
+    this.events();
+    this.load();
+  },
+  load: function() {
+    console.log('start load');
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(json => this.render(json));
+  },
+  test() {
+    console.log( 'hello world')
+  },
+  events: function() {
+    console.log('start events');
+    document.addEventListener('DOMContentLoaded', function() { // Аналог $(document).ready(function(){
+      const saveBtn = document.getElementById('saveBtn');
+      saveBtn.addEventListener('click', saveData);
+    });
+  },
+  render: function(json) {
+    console.log('start render');
+    gData = json = json.map(x => {
+      delete x["address"];
+      delete x["company"];
+      return x;
+    });
+    this.createTable(json);
+    
+  },
+  createTable: function(json) {
+    console.log('start createTable');
+    getTableHeader(Object.keys(json[0]));
+    getTableData(json);
+  },
+    getTableHeader: function(fields) {
+      console.log('start getTableHeader')
+  },
+    getTableData: function(data) {
+      console.log('start getTableData')
+  },
+};
+
+TestProject.init()
