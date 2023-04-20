@@ -4,65 +4,13 @@ let gData = undefined;
 
 
 
-function getTableHeader(fields) {
-  const table = document.querySelector('.table');
-  const thead = document.createElement('thead');
-  const tr = document.createElement('tr');
-  const fragment = document.createDocumentFragment();
-  fields.forEach(x => {
-    const th = document.createElement('th');
-    th.innerText = x; 
-    th.scope = "col";
-    th.id = x;
-    fragment.appendChild(th);
-  });
-  tr.appendChild(fragment);
-  thead.appendChild(tr);
-  table.appendChild(thead);
-  clickFilterEvents(fields);
-};
 
-function getTableData(data) {
-  const table = document.querySelector('.table');
-  const tbody = document.createElement('tbody');
-  data.forEach(x => {
-    const tr = document.createElement('tr');
-    const fragment = document.createDocumentFragment();
-    const keys = Object.keys(data[0]);
-    keys.forEach(y => {
-      let td = undefined;
-      if (y === "id") {
-        td = document.createElement('th');
-        td.scope ="row";
-      } else {
-        td = document.createElement('td');
-        td.setAttribute('contenteditable', true);
-      }
-      td.innerText = x[y];
-      fragment.appendChild(td);
-    });
-    tr.appendChild(fragment);
-    tbody.appendChild(tr);
-    table.appendChild(tbody);
-  });
-  replacement();
-};
 
-function deleteTableData() {
-  const tbody = document.querySelector('.table tbody');
-  tbody.remove();
-};
 
-function clickFilterEvents (fields) {
-  fields.forEach(x => {
-    const thisTh = document.querySelector(`#${x}`);
-    const trigsort = sort();
-    thisTh.addEventListener('click', e => {
-      deleteTableData();
-      trigsort(e);
-    });
-  });
-};
+
+
+
+
 
 function sort () {
   let trigger = 1;
@@ -126,36 +74,79 @@ const TestProject = {
       .then(json => this.render(json));
   },
   test() {
-    console.log( 'hello world')
+    console.log('hello world')
   },
   events: function() {
     console.log('start events');
-    document.addEventListener('DOMContentLoaded', function() { // Аналог $(document).ready(function(){
+    document.addEventListener('DOMContentLoaded', function() {
       const saveBtn = document.getElementById('saveBtn');
       saveBtn.addEventListener('click', saveData);
     });
   },
   render: function(json) {
     console.log('start render');
-    gData = json = json.map(x => {
+    const gData = json.map(x => {
       delete x["address"];
       delete x["company"];
       return x;
     });
-    this.createTable(json);
-    
+    this.createTable(gData);
   },
   createTable: function(json) {
     console.log('start createTable');
-    getTableHeader(Object.keys(json[0]));
-    getTableData(json);
+    const restHeader = this.getTableHeader(Object.keys(json[0]));
+    this.getWrap(restHeader);
+    const restBody = this.getTableData(json);
+    this.getWrap(restBody);
   },
-    getTableHeader: function(fields) {
-      console.log('start getTableHeader')
+
+  getTableHeader: function(fields) {
+    console.log('start getTableHeader')
+    const fragment = document.createDocumentFragment();
+    const tr = document.createElement('tr');
+    fields.forEach(x => {
+      const th = document.createElement('th');
+      th.innerText = x;
+      th.scope = "col";
+      th.id = x;
+      tr.appendChild(th);
+      fragment.appendChild(tr);
+    });
+    return fragment;
   },
-    getTableData: function(data) {
-      console.log('start getTableData')
+  getTableData: function(data) {
+    console.log('start getTableData')
+    const fragment = document.createDocumentFragment();
+    data.forEach(x => {
+      const keys = Object.keys(data[0]);
+      const tr = document.createElement('tr');
+      keys.forEach(y => {
+        let td = undefined;
+        if (y === "id") {
+          td = document.createElement('th');
+          td.scope ="row";
+        } else {
+          td = document.createElement('td');
+          td.setAttribute('contenteditable', true);
+        }
+        td.innerText = x[y];
+        tr.appendChild(td);
+      });
+      fragment.appendChild(tr);
+    });
+    return fragment;
+  },
+  getWrap: function(fragment) {
+    console.log('start getWrap')
+    const table = document.querySelector('.table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+    tbody.appendChild(fragment);
+    table.appendChild(tbody);
+    thead.appendChild(fragment);
+    table.appendChild(thead);
   },
 };
 
-TestProject.init()
+
+TestProject.init();
