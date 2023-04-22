@@ -94,10 +94,18 @@ const TestProject = {
   },
   createTable: function(json) {
     console.log('start createTable');
+    const table = document.querySelector('.table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+     
     const restHeader = this.getTableHeader(Object.keys(json[0]));
-    this.getWrap(restHeader);
+    thead.appendChild(restHeader);
+     
     const restBody = this.getTableData(json);
-    this.getWrap(restBody);
+    tbody.appendChild(restBody);
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
   },
 
   getTableHeader: function(fields) {
@@ -136,15 +144,12 @@ const TestProject = {
     });
     return fragment;
   },
-  getWrap: function(fragment) {
+  getWrap: function(fragment, target) {
     console.log('start getWrap')
     const table = document.querySelector('.table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-    tbody.appendChild(fragment);
-    table.appendChild(tbody);
-    thead.appendChild(fragment);
-    table.appendChild(thead);
+    const tag = document.createElement(target);
+    tag.appendChild(fragment);
+    table.appendChild(tag);
   },
 };
 
