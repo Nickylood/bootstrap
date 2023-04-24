@@ -49,15 +49,7 @@ function replacement() {
 
 const saveBtn = document.getElementById('saveBtn');
 
-function saveData() {
-  console.log(saveBtn);
-  
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://jsonplaceholder.typicode.com/users');
-    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    const jsonData = JSON.stringify(gData);
-    xhr.send(jsonData);
-};
+
 
 
 
@@ -80,7 +72,15 @@ const TestProject = {
     console.log('start events');
     document.addEventListener('DOMContentLoaded', function() {
       const saveBtn = document.getElementById('saveBtn');
-      saveBtn.addEventListener('click', saveData);
+      saveBtn.addEventListener('click', function () {
+        
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://jsonplaceholder.typicode.com/users');
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        const jsonData = JSON.stringify(gData);
+        xhr.send(jsonData);
+      },
+      );
     });
   },
   render: function(json) {
@@ -94,18 +94,10 @@ const TestProject = {
   },
   createTable: function(json) {
     console.log('start createTable');
-    const table = document.querySelector('.table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-     
     const restHeader = this.getTableHeader(Object.keys(json[0]));
-    thead.appendChild(restHeader);
-     
+    this.getWrap(restHeader, 'thead');
     const restBody = this.getTableData(json);
-    tbody.appendChild(restBody);
-
-    table.appendChild(thead);
-    table.appendChild(tbody);
+    this.getWrap(restBody,'tbody');
   },
 
   getTableHeader: function(fields) {
