@@ -1,23 +1,21 @@
-  
 
-let gData = undefined;
 
 const saveBtn = document.getElementById('saveBtn');
 
 const TestProject = {
+json: {},
   init: function() {
     console.log('start init');
     this.events();
     this.load();
     this.replacement();
-    this.sort();
   },
 
   load: function() {
     console.log('start load');
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
-      .then(json => this.render(json));
+      .then(json => this.render(TestProject.json = json));
   },
 
   test() {
@@ -30,31 +28,37 @@ const TestProject = {
       const saveBtn = document.getElementById('saveBtn');
       saveBtn.addEventListener('click', function () {
         
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://jsonplaceholder.typicode.com/users');
-        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        const jsonData = JSON.stringify(gData);
-        xhr.send(jsonData);
-      },
-      );
-    });
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://jsonplaceholder.typicode.com/users');
+      xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+      const jsonData = JSON.stringify(TestProject.json);
+      xhr.send(jsonData);
+    },
+    );
+  });
+    const ths = document.querySelectorAll('thead th');
+            ths.forEach(th => {
+            th.addEventListener('click', TestProject.sort(TestProject.json));
+  });
   },
 
+  
   render: function(json) {
     console.log('start render');
-    const gData = json.map(x => {
+    json.map(x => {
       delete x["address"];
       delete x["company"];
       return x;
     });
-    this.createTable(gData);
+    this.createTable(json);
   },
 
   createTable: function(json) {
     console.log('start createTable');
-    const restHeader = this.getTableHeader(Object.keys(json[0]));
+    const restSortJson = this.sort(json);
+    const restHeader = this.getTableHeader(Object.keys(restSortJson[0]));
     this.getWrap(restHeader, 'thead');
-    const restBody = this.getTableData(json);
+    const restBody = this.getTableData(restSortJson);
     this.getWrap(restBody,'tbody');
   },
 
@@ -104,20 +108,16 @@ const TestProject = {
     table.appendChild(tag);
   },
 
-  sort: function() {
+  sort: function(data) {
     console.log('start sort');
-    let trigger = 1;
-    return e => {
-      trigger = -trigger;
-      gData.sort((a, b) => {
-        if(a[e.target.id] > b[e.target.id]) {
-          return trigger;
-        } else {
-          return -trigger;
-        }
-      });
-      this.getTableData(gData);
-    };
+    return data.sort((a, b) => {
+      if (a.id > b.id) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    
   },
 
   replacement: function() {
@@ -133,7 +133,7 @@ const TestProject = {
           const cellIndex = td.cellIndex;
           const th = td.parentNode.parentNode.querySelector('thead th:nth-child(' + (cellIndex + 1) + ')');
           if (th) {
-            gData[rowIndex - 1][th.id] = td.innerHTML;
+            TestProject.json[rowIndex - 1][th.id] = td.innerHTML;
           }
         } 
         td.removeAttribute('contenteditable');
