@@ -1,73 +1,29 @@
-
+  
 
 let gData = undefined;
 
-
-
-
-
-
-
-
-
-
-
-function sort () {
-  let trigger = 1;
-  return e => {
-    trigger = -trigger;
-    gData.sort((a, b) => {
-      if(a[e.target.id] > b[e.target.id]) {
-        return trigger;
-      } else {
-        return -trigger;
-      }
-    });
-    getTableData(gData);
-  };
-};
-
-function replacement() {
-  const tds = document.querySelectorAll('td[contenteditable="true"]');
-  tds.forEach(td => {
-    td.addEventListener('focus', function() {
-      td.setAttribute('data-before', td.innerHTML);
-    });
-    td.addEventListener('blur', function() {
-      if (td.getAttribute('data-before') !== td.innerHTML) {
-        const rowIndex = td.parentNode.rowIndex;
-        const cellIndex = td.cellIndex;
-        const th = td.parentNode.parentNode.querySelector('thead th:nth-child(' + (cellIndex + 1) + ')');
-        if (th) {
-          gData[rowIndex - 1][th.id] = td.innerHTML;
-        }
-      } 
-      td.removeAttribute('contenteditable');
-    });
-  });
-}
-
 const saveBtn = document.getElementById('saveBtn');
-
-
-
-
 
 const TestProject = {
   init: function() {
     console.log('start init');
     this.events();
     this.load();
+    this.replacement();
+    this.sort();
   },
+
   load: function() {
     console.log('start load');
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
       .then(json => this.render(json));
   },
+
   test() {
     console.log('hello world')
   },
+
   events: function() {
     console.log('start events');
     document.addEventListener('DOMContentLoaded', function() {
@@ -83,6 +39,7 @@ const TestProject = {
       );
     });
   },
+
   render: function(json) {
     console.log('start render');
     const gData = json.map(x => {
@@ -92,6 +49,7 @@ const TestProject = {
     });
     this.createTable(gData);
   },
+
   createTable: function(json) {
     console.log('start createTable');
     const restHeader = this.getTableHeader(Object.keys(json[0]));
@@ -114,6 +72,7 @@ const TestProject = {
     });
     return fragment;
   },
+
   getTableData: function(data) {
     console.log('start getTableData')
     const fragment = document.createDocumentFragment();
@@ -136,6 +95,7 @@ const TestProject = {
     });
     return fragment;
   },
+
   getWrap: function(fragment, target) {
     console.log('start getWrap')
     const table = document.querySelector('.table');
@@ -143,7 +103,43 @@ const TestProject = {
     tag.appendChild(fragment);
     table.appendChild(tag);
   },
+
+  sort: function() {
+    console.log('start sort');
+    let trigger = 1;
+    return e => {
+      trigger = -trigger;
+      gData.sort((a, b) => {
+        if(a[e.target.id] > b[e.target.id]) {
+          return trigger;
+        } else {
+          return -trigger;
+        }
+      });
+      this.getTableData(gData);
+    };
+  },
+
+  replacement: function() {
+    console.log('start replacement')
+    const tds = document.querySelectorAll('td[contenteditable="true"]');
+    tds.forEach(td => {
+      td.addEventListener('focus', function() {
+        td.setAttribute('data-before', td.innerHTML);
+      });
+      td.addEventListener('blur', function() {
+        if (td.getAttribute('data-before') !== td.innerHTML) {
+          const rowIndex = td.parentNode.rowIndex;
+          const cellIndex = td.cellIndex;
+          const th = td.parentNode.parentNode.querySelector('thead th:nth-child(' + (cellIndex + 1) + ')');
+          if (th) {
+            gData[rowIndex - 1][th.id] = td.innerHTML;
+          }
+        } 
+        td.removeAttribute('contenteditable');
+      });
+    });
+  },
+
 };
-
-
 TestProject.init();
