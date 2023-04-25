@@ -1,6 +1,5 @@
 
 
-const saveBtn = document.getElementById('saveBtn');
 
 const TestProject = {
 json: {},
@@ -15,7 +14,10 @@ json: {},
     console.log('start load');
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
-      .then(json => this.render(TestProject.json = json));
+      .then(json => {
+        TestProject.json = TestProject.sort(json, 'id')
+        this.render(TestProject.json)
+      });
   },
 
   test() {
@@ -36,29 +38,31 @@ json: {},
     },
     );
   });
-    const ths = document.querySelectorAll('thead th');
-            ths.forEach(th => {
-            th.addEventListener('click', TestProject.sort(TestProject.json));
-  });
   },
 
   
   render: function(json) {
     console.log('start render');
+    console.log(json);
     json.map(x => {
       delete x["address"];
       delete x["company"];
       return x;
     });
+    this.reset();
     this.createTable(json);
+    
+  },
+  reset: function() {
+    const table = document.querySelector('.table');
+    table.replaceChildren();
   },
 
   createTable: function(json) {
     console.log('start createTable');
-    const restSortJson = this.sort(json);
-    const restHeader = this.getTableHeader(Object.keys(restSortJson[0]));
+    const restHeader = this.getTableHeader(Object.keys(json[0]));
     this.getWrap(restHeader, 'thead');
-    const restBody = this.getTableData(restSortJson);
+    const restBody = this.getTableData(json);
     this.getWrap(restBody,'tbody');
   },
 
@@ -71,6 +75,10 @@ json: {},
       th.innerText = x;
       th.scope = "col";
       th.id = x;
+      th.addEventListener('click', function(e) {
+      TestProject.json = TestProject.sort(TestProject.json, e.target.id)
+      TestProject.render(TestProject.json);
+      });
       tr.appendChild(th);
       fragment.appendChild(tr);
     });
@@ -108,16 +116,17 @@ json: {},
     table.appendChild(tag);
   },
 
-  sort: function(data) {
-    console.log('start sort');
+  sort: function(data, key) {
+    console.log('start sort', key);
     return data.sort((a, b) => {
-      if (a.id > b.id) {
+      if (a[key] < b[key]) {
+        return -1;
+      } else if (a[key] > b[key]) {
         return true;
       } else {
         return false;
       }
     });
-    
   },
 
   replacement: function() {
@@ -143,3 +152,7 @@ json: {},
 
 };
 TestProject.init();
+
+
+
+
